@@ -1,0 +1,23 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Информация о пользователе";
+}
+
+<h1>Информация о пользователе</h1>
+<p>Имя: @ViewBag.Name</p>
+<p>Возраст: @ViewBag.Age</p>
+<p>
+    Статус:
+    @if (ViewBag.IsAdult == true)
+    {
+        <span class="text-sucsess">Соверешеннолетний</span>
+    }
+    else
+    {
+        <span class="text-warning">Несоверешеннолетний</span>
+    }
+</p>
+<p>Год рождения: @ViewData["BirthYear"].ToString()</p>
+<p>Текущий год: @ViewData["CurrentYear"].ToString()</p>
