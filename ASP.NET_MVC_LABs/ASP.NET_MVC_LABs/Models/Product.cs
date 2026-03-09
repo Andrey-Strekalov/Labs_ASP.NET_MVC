@@ -20,8 +20,7 @@ namespace ASP.NET_MVC_LABs.Models
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Цена обязательна")]
-        [Range(0.01, 10000000,
- ErrorMessage = "Цена должна быть от 0.01 до 10 000 000")]
+        [Range(0.01, 10000000, ErrorMessage = "Цена должна быть от 0.01 до 10 000 000")]
         [Display(Name = "Цена")]
         public decimal Price { get; set; }
 
