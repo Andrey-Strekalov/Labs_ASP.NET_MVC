@@ -1,7 +1,13 @@
+using ASP.NET_MVC_LABs.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddScoped<IProductRepository, InMemoryProductRepository>();
+builder.Services.AddScoped<IProductRepository, InMemoryProductRepository>();
+builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
 
 var app = builder.Build();
 
