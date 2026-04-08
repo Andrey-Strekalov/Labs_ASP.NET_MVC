@@ -2,7 +2,7 @@
 
 namespace ASP.NET_MVC_LABs.Data
 {
-    public static class SeedData
+    public static class SeedDataProduct
     {
         public static async Task InitializeAsync(AppDbContext context)
         {

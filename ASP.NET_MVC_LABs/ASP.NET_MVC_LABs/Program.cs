@@ -15,14 +15,15 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(buil
 
 
 builder.Services.AddScoped<IProductRepository, EfProductRepository>();
-builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
+builder.Services.AddScoped<IGameRepository, EfGameRepository>();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await SeedData.InitializeAsync(dbContext);
+    await SeedDataProduct.InitializeAsync(dbContext);
+    await SeedDataGames.InitializeAsync(dbContext);
 }
 
 
