@@ -1,15 +1,31 @@
+using ASP.NET_MVC_LABs.Data;
 using ASP.NET_MVC_LABs.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//builder.Services.AddScoped<IProductRepository, InMemoryProductRepository>();
-builder.Services.AddScoped<IProductRepository, InMemoryProductRepository>();
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+ .LogTo(Console.WriteLine, LogLevel.Information) // Логирование SQL
+ .EnableSensitiveDataLogging() // Показывать параметры
+);
+
+
+builder.Services.AddScoped<IProductRepository, EfProductRepository>();
 builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await SeedData.InitializeAsync(dbContext);
+}
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
