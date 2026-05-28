@@ -1,0 +1,42 @@
+@model IEnumerable<ASP.NET_MVC_LABs.Models.Game>
+@{
+    ViewData["Title"] = ViewBag.Title ?? "Поиск игр";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="get" class="row g-3 mb-4">
+    <div class="col-auto flex-grow-1">
+        <input type="text" name="term" class="form-control" placeholder="Введите название, жанр или разработчика..." value="@ViewBag.SearchTerm">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Найти</button>
+        <a asp-action="Index" class="btn btn-secondary">Сбросить</a>
+    </div>
+</form>
+
+@if (!string.IsNullOrWhiteSpace(ViewBag.SearchTerm as string) && !Model.Any())
+{
+    <div class="alert alert-info">По запросу "@ViewBag.SearchTerm" ничего не найдено</div>
+}
+
+@if (Model.Any())
+{
+    <div class="alert alert-success">Найдено игр: @ViewBag.Count</div>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Title</h5>
+                        <p class="card-text text-muted">@item.Genre &bull; @item.ReleaseYear</p>
+                        <p class="card-text">Рейтинг: <strong>@item.Rating / 10</strong></p>
+                        <p class="card-text text-muted small">@item.Developer</p>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ASP.NET_MVC_LABs.Models;
 using ASP.NET_MVC_LABs.Repositories;
 
@@ -17,7 +17,7 @@ namespace ASP.NET_MVC_LABs.Controllers
         public IActionResult Index()
         {
             var games = _repository.GetAll();
-            return View(games); // ПЕРЕДАЕМ МОДЕЛЬ В ПРЕДСТАВЛЕНИЕ
+            return View(games);
         }
 
         // GET: /Games/Details/5
@@ -25,16 +25,13 @@ namespace ASP.NET_MVC_LABs.Controllers
         {
             var game = _repository.GetById(id);
             if (game == null)
-            {
                 return NotFound();
-            }
             return View(game);
         }
 
         // GET: /Games/Create
         public IActionResult Create()
         {
-            // Передаем пустую модель для заполнения формы
             return View(new Game());
         }
 
@@ -43,14 +40,13 @@ namespace ASP.NET_MVC_LABs.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Game game)
         {
-            if (ModelState.IsValid) // Исправлено: проверяем валидность, а не !IsValid
+            if (ModelState.IsValid)
             {
                 game.CreatedDate = DateTime.Now;
                 _repository.Add(game);
                 TempData["SucsessMessage"] = "Позиция успешно добавлена";
                 return RedirectToAction(nameof(Index));
             }
-            // Если модель невалидна, возвращаем представление с той же моделью для отображения ошибок
             return View(game);
         }
 
@@ -59,9 +55,7 @@ namespace ASP.NET_MVC_LABs.Controllers
         {
             var game = _repository.GetById(id);
             if (game == null)
-            {
                 return NotFound();
-            }
             return View(game);
         }
 
@@ -78,7 +72,7 @@ namespace ASP.NET_MVC_LABs.Controllers
                 try
                 {
                     _repository.Update(game);
-                    TempData["SucsessMessage"] = "Позиция успешно обновлена"; // Исправлено сообщение
+                    TempData["SucsessMessage"] = "Позиция успешно обновлена";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (InvalidOperationException ex)
@@ -86,7 +80,6 @@ namespace ASP.NET_MVC_LABs.Controllers
                     ModelState.AddModelError("", ex.Message);
                 }
             }
-            // Если модель невалидна или ошибка репозитория, возвращаем представление с моделью
             return View(game);
         }
 
@@ -105,7 +98,7 @@ namespace ASP.NET_MVC_LABs.Controllers
         public IActionResult DeleteConfirmed(int id)
         {
             _repository.Delete(id);
-            TempData["SucsessMessage"] = "Товар удален!";
+            TempData["SucsessMessage"] = "Игра удалена!";
             return RedirectToAction(nameof(Index));
         }
 
@@ -114,7 +107,86 @@ namespace ASP.NET_MVC_LABs.Controllers
         {
             var games = _repository.GetByGenre(genre);
             ViewBag.Genre = genre;
-            return View(games); // ПЕРЕДАЕМ МОДЕЛЬ В ПРЕДСТАВЛЕНИЕ
+            return View(games);
+        }
+
+        // GET: /Games/ByYear?year=2020
+        public IActionResult ByYear(int year)
+        {
+            var games = _repository.GetByYear(year);
+            ViewBag.Year = year;
+            ViewBag.Title = $"Игры {year} года";
+            return View(games);
+        }
+
+        // GET: /Games/TopRated?count=5
+        public IActionResult TopRated(int count = 5)
+        {
+            var games = _repository.GetTopRatedGames(count);
+            ViewBag.Title = $"Топ {count} игр по рейтингу";
+            ViewBag.Count = count;
+            return View(games);
+        }
+
+        // GET: /Games/Search?term=witcher
+        public IActionResult Search(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+            {
+                ViewBag.SearchTerm = string.Empty;
+                ViewBag.Title = "Поиск игр";
+                return View(Enumerable.Empty<Game>());
+            }
+
+            var games = _repository.SearchGames(term);
+            ViewBag.SearchTerm = term;
+            ViewBag.Title = $"Результаты поиска: {term}";
+            ViewBag.Count = games.Count();
+            return View(games);
+        }
+
+        // GET: /Games/Statistics
+        public IActionResult Statistics()
+        {
+            var games = _repository.GetAll();
+            var stats = new GamesStatisticsViewModel
+            {
+                TotalCount = _repository.GetTotalCount(),
+                AverageRating = _repository.GetAverageRating(),
+                MultiplayerCount = games.Count(g => g.IsMultiplayer),
+                Genres = games
+                    .GroupBy(g => g.Genre)
+                    .Select(g => new GenreStatViewModel
+                    {
+                        Genre = g.Key ?? "Без жанра",
+                        Count = g.Count(),
+                        AverageRating = g.Average(x => (double)x.Rating),
+                        MaxRating = g.Max(x => x.Rating),
+                        MinRating = g.Min(x => x.Rating)
+                    })
+                    .OrderBy(g => g.Genre)
+            };
+            return View(stats);
+        }
+
+        // GET: /Games/GroupedByGenre
+        public IActionResult GroupedByGenre()
+        {
+            var games = _repository.GetAll();
+            return View(games);
+        }
+
+        // GET: /Games/Paginated?page=1
+        public IActionResult Paginated(int page = 1, int pageSize = 5)
+        {
+            var games = _repository.GetGamesWithPagination(page, pageSize);
+            var totalPages = _repository.GetTotalPages(pageSize);
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.HasPreviousPage = page > 1;
+            ViewBag.HasNextPage = page < totalPages;
+            return View(games);
         }
     }
 }
