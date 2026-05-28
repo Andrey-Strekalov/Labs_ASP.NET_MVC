@@ -1,0 +1,74 @@
+@model IEnumerable<ASP.NET_MVC_LABs.Models.Game>
+@{
+    ViewData["Title"] = "Игры (пагинация)";
+}
+
+<h1>Игры (пагинация)</h1>
+<p>Страница @ViewBag.CurrentPage из @ViewBag.TotalPages</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Жанр</th>
+            <th>Год</th>
+            <th>Рейтинг</th>
+            <th>Мультиплеер</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.Genre</td>
+                <td>@item.ReleaseYear</td>
+                <td>@item.Rating / 10</td>
+                <td>@(item.IsMultiplayer ? "Да" : "Нет")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Детали</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @if (ViewBag.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Paginated" asp-route-page="@(ViewBag.CurrentPage - 1)">Назад</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <span class="page-link">Назад</span>
+            </li>
+        }
+
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-action="Paginated" asp-route-page="@i">@i</a>
+            </li>
+        }
+
+        @if (ViewBag.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Paginated" asp-route-page="@(ViewBag.CurrentPage + 1)">Вперёд</a>
+            </li>
+        }
+        else
+        {
+            <li class="page-item disabled">
+                <span class="page-link">Вперёд</span>
+            </li>
+        }
+    </ul>
+</nav>
+
+<a asp-action="Index" class="btn btn-secondary">← Назад</a>

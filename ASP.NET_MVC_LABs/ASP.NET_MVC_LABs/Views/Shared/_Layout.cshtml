@@ -29,9 +29,34 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Товары</a>
                         </li>
-                        <!-- Новая ссылка на игры -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                                LINQ (Товары)
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="ByPrice">Фильтр по цене</a></li>
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="TopExpensive">Топ дорогих</a></li>
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="Search">Поиск</a></li>
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="GroupedByCategory">По категориям</a></li>
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="Statistics">Статистика</a></li>
+                                <li><a class="dropdown-item" asp-controller="Products" asp-action="Paginated">Пагинация</a></li>
+                            </ul>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Games" asp-action="Index">Игры</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                                LINQ (Игры)
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="Games" asp-action="ByYear">По году</a></li>
+                                <li><a class="dropdown-item" asp-controller="Games" asp-action="TopRated">Топ рейтинга</a></li>
+                                <li><a class="dropdown-item" asp-controller="Games" asp-action="Search">Поиск</a></li>
+                                <li><a class="dropdown-item" asp-controller="Games" asp-action="GroupedByGenre">По жанрам</a></li>
+                                <li><a class="dropdown-item" asp-controller="Games" asp-action="Statistics">Статистика</a></li>
+                                <li><a class="dropdown-item" asp-controller="Games" asp-action="Paginated">Пагинация</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

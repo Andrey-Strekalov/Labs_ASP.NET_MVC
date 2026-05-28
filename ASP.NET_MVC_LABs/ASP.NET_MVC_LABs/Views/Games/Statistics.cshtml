@@ -1,0 +1,60 @@
+@model ASP.NET_MVC_LABs.Models.GamesStatisticsViewModel
+@{
+    ViewData["Title"] = "Статистика игр";
+}
+
+<h1>Статистика игр</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Всего игр</h5>
+                <p class="card-text display-4">@Model.TotalCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">С мультиплеером</h5>
+                <p class="card-text display-4">@Model.MultiplayerCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Средний рейтинг</h5>
+                <p class="card-text display-4">@Model.AverageRating.ToString("F1") / 10</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2>Статистика по жанрам</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Жанр</th>
+            <th>Количество</th>
+            <th>Средний рейтинг</th>
+            <th>Мин. рейтинг</th>
+            <th>Макс. рейтинг</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var genre in Model.Genres)
+        {
+            <tr>
+                <td>@genre.Genre</td>
+                <td>@genre.Count</td>
+                <td>@genre.AverageRating.ToString("F1")</td>
+                <td>@genre.MinRating</td>
+                <td>@genre.MaxRating</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">← Назад</a>
